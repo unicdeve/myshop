@@ -12,6 +12,8 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 import weasyprint
 
+from shop.recommender import Recommender
+
 
 def order_create(request):
   cart = Cart(request)
@@ -25,6 +27,10 @@ def order_create(request):
       order.save()
       for item in cart:
         OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
+      # save the order for recommendations
+      r = Recommender()
+      products = [item['product'] for item in cart]
+      r.products_bought(products)
       cart.clear()
       # lauch asynchronous task
       order_created.delay(order.id)
