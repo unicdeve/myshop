@@ -28,7 +28,7 @@ def order_create(request):
       for item in cart:
         OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
       # save the order for recommendations
-      r = Recommender()
+      # r = Recommender()
       products = [item['product'] for item in cart]
       r.products_bought(products)
       cart.clear()
